@@ -1,0 +1,89 @@
+---
+title: "KevinFijiAgreementOnNegationAnnotation.Rmd"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Inter-annotator agreement between Kevin and Fiji on CRAFT
+## and MIMIC2MD negation annotation
+
+
+```{r cars}
+craft.kevin.data <- read.table("/Users/kev/Dropbox/Negation/Code/CRAFT.type.token.with.prefix.KEVIN.csv", header=F, sep=",")
+craft.fiji.data <- read.table("/Users/kev/Dropbox/Negation/Code/CRAFT.type.token.with.prefix.FIJI.csv", header=F, sep=",")
+mimic.kevin.data <- read.table("/Users/kev/Dropbox/Negation/Code/MIMIC2MD.type.token.with.prefix.KEVIN.annotated.csv", header=F, sep=",")
+mimic.fiji.data <- read.table("/Users/kev/Dropbox/Negation/Code/MIMIC2MD.type.token.with.prefix.FIJI.annotated.csv", header=F, sep=",")
+```
+Let's define a function to calculate agreement.  To test it, I calculated my agreement with myself and got 1.0, then my agreement on the two different corpora and got a surprisingly high 0.06!
+```{r }
+agreement <- function(df.one, df.two) {
+  # quick validation
+  # this doesn't quit when it should--TODO how do I do this in R??
+  if (nrow(df.one) != nrow(df.two)) { quit }
+  
+  agreements <- 0
+  disagreements <- 0
+  #judgements <- 0 # calculating agreement only when one or the other 
+                  # labelled it
+  for (i in 1:nrow(df.one)) {
+    if (df.one[i,4] == "x" & df.two[i,4] == "x") {
+      agreements <- agreements + 1
+    } else if ((df.one[i,4] == "x" & df.two[i,4] != "x") | (df.one[i,4] != "x" & df.two[i,4] == "x")) {
+      disagreements <- disagreements + 1
+    }
+  }
+  return (agreements / (agreements + disagreements))
+}
+```
+
+Let's define another function to calculate agreement, this one considering the ones that neither of us annotated as negative.  To test it, I calculated my agreement with myself and got 1.0.
+```{r }
+agreement.including.all <- function(df.one, df.two) {
+  # quick validation
+  # this doesn't quit when it should--TODO how do I do this in R??
+  if (nrow(df.one) != nrow(df.two)) { quit }
+  
+  agreements <- 0
+  disagreements <- 0
+  #judgements <- 0 # calculating agreement only when one or the other 
+                  # labelled it
+  for (i in 1:nrow(df.one)) {
+    if (df.one[i,4] == df.two[i,4]) {
+      agreements <- agreements + 1
+    } else {
+      disagreements <- disagreements + 1
+    }
+  }
+  return (agreements / (agreements + disagreements))
+}
+```
+
+## Now let's try to calculate agreement!
+
+```{r}
+agreement.craft <- agreement(mimic.kevin.data, mimic.fiji.data)
+print("CRAFT IAA (only including ones marked by someone):")
+agreement.craft
+
+agreement.mimic <- agreement(craft.kevin.data, craft.fiji.data)
+print("MIMIC IAA (as above):")
+agreement.mimic
+
+agreement.craft <- agreement.including.all(mimic.kevin.data, mimic.fiji.data)
+print("CRAFT IAA (including all):")
+agreement.craft
+
+agreement.mimic <- agreement.including.all(craft.kevin.data, craft.fiji.data)
+print("MIMIC IAA (as above):")
+agreement.mimic
+
+all.kevin.data <- rbind(craft.kevin.data, mimic.kevin.data)
+all.fiji.data <- rbind(craft.fiji.data, mimic.fiji.data)
+agreement.all <- agreement.including.all(all.kevin.data, all.fiji.data)
+print("Overall agreement, including all:")
+agreement.all
+```
+
