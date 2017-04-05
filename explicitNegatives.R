@@ -1,7 +1,7 @@
 #library(sm)
 # change to your own directory structure
-data1 <- read.csv("/Users/kev/Dropbox/A-M/Corpora/scripts/negatives_craft.txt")
-data2 <- read.csv("/Users/kev/Dropbox/A-M/Corpora/scripts/negatives_mimic2disch.txt")
+data1 <- read.csv("negatives_craft.txt")
+data2 <- read.csv("negatives_mimic2disch.txt")
 n_data1 <- data1$neg
 n_data2 <- data2$neg
 t.test(n_data1,n_data2)
@@ -10,12 +10,17 @@ t.test(n_data1,n_data2)
 #d <- density(n_data1)
 #plot(d)
 #data1
-plot(density(n_data2), xlim=c(0, max(n_data2)), ylim=c(0, 0.06), lty=2,
-     main="Distribution of frequency of explicit negation per 10K words")
-lines(density(n_data1), lty=3)
-#legend("topright", legend=c("MIMIC II discharge summaries", "Journal articles"), 
-       #names(legendnames), cex=0.8,  
-#       lty=2:3, lwd=3, bty="n")
-legend("topright", c("MIMIC II discharge summaries", "Journal articles"), lty=2:3)
+
+d1 <- density(n_data1, n=128)
+d2 <- density(n_data2, n=128)
+
+pdf(file="medinfo-pdf.pdf", width=5, height=4)
+par(mar=c(2,2,0.5,0.5)+0.1)
+plot(d2$x, d2$y, xlim=c(0, max(n_data2)), ylim=c(0, 0.06), lty=2, pch=".", col="red", main=NULL)
+lines(d1$x, d1$y, pch=".", col="blue")
+title(main = NULL, sub = NULL, xlab = NULL, ylab = NULL)
+legend("topright", c("Journal articles", "MIMIC II discharge summaries"), lty=1:2, col=c("blue", "red"))
+dev.off()
+
 shapiro.test(n_data1)
 shapiro.test(n_data2)
