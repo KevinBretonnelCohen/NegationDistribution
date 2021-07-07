@@ -12,9 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r cars}
-craft.kevin.data <- read.table("/Users/kev/Dropbox/Negation/Code/CRAFT.type.token.with.prefix.KEVIN.csv", header=F, sep=",")
+craft.kevin.data <- read.table("/Users/kev/Dropbox/Negation/Code/CRAFT.type.token.with.prefix.KEVIN.txt", header=F, sep="\t")
 craft.fiji.data <- read.table("/Users/kev/Dropbox/Negation/Code/CRAFT.type.token.with.prefix.FIJI.csv", header=F, sep=",")
-mimic.kevin.data <- read.table("/Users/kev/Dropbox/Negation/Code/MIMIC2MD.type.token.with.prefix.KEVIN.annotated.csv", header=F, sep=",")
+mimic.kevin.data <- read.table("/Users/kev/Dropbox/Negation/Code/MIMIC2MD.type.token.with.prefix.KEVIN.xls", header=F, sep="\t")
 mimic.fiji.data <- read.table("/Users/kev/Dropbox/Negation/Code/MIMIC2MD.type.token.with.prefix.FIJI.annotated.csv", header=F, sep=",")
 ```
 Let's define a function to calculate agreement.  To test it, I calculated my agreement with myself and got 1.0, then my agreement on the two different corpora and got a surprisingly high 0.06!
